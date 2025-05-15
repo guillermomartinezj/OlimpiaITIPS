@@ -1,25 +1,26 @@
+
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
-//@Component({
-//  selector: 'app-root',
-//  imports: [RouterOutlet],
-//  templateUrl: './app.component.html',
-//  standalone: false,
-//  styleUrl: './app.component.css'
-//})
-//export class AppComponent {
-//  title = 'FrontAngular';
-//}
-
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './components/auth/login/login.component.html',
-  standalone: false,
-  /*styleUrl: './app.component.css'*/
+  standalone: true,
+  imports: [RouterOutlet, CommonModule],
+  template: `
+    <div class="app-container">
+      <router-outlet></router-outlet>
+    </div>
+  `,
+  styles: [`
+    .app-container {
+      width: 100%;
+      height: 100vh;
+    }
+  `]
 })
 export class AppComponent {
-  title = 'FrontAngular';
+  constructor() {
+    console.log('AppComponent initialized');
+  }
 }

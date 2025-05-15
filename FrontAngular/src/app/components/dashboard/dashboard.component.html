@@ -1,0 +1,26 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Dashboard</h1>
+    <button class="logout-button" (click)="logout()">Cerrar sesión</button>
+  </header>
+
+  <div class="dashboard-content">
+    <h2>Bienvenido, {{ username }}</h2>
+    <p>Esta es una página protegida que solo pueden ver los usuarios autenticados.</p>
+
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>Estadísticas</h3>
+        <p>Visualiza tus estadísticas y métricas</p>
+      </div>
+      <div class="card">
+        <h3>Proyectos</h3>
+        <p>Administra tus proyectos actuales</p>
+      </div>
+      <div class="card">
+        <h3>Mensajes</h3>
+        <p>Revisa tus mensajes recientes</p>
+      </div>
+    </div>
+  </div>
+</div>

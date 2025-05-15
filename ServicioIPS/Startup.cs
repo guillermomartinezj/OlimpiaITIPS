@@ -27,13 +27,25 @@ namespace ServicioIPS
                             .AddAplicationInsights(Configuration)
                             .AddLogger(Configuration);
 
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    // Permitir cualquier origen, método y encabezado
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             /* para agregar servicios de terceros */
 
             //services.AddHttpClient("SercurId", client =>
             //{
             //    client.BaseAddress = new Uri(Configuration["SecurId:BaseUrl"] ?? string.Empty);
             //});
-                       
+
         }
 
 
@@ -45,6 +57,7 @@ namespace ServicioIPS
                 app.UseSwaggerUI();
             }
 
+            app.UseCors();
             app.UseRouting();
             app.UseHttpsRedirection();
             app.UseAuthentication();
@@ -55,6 +68,8 @@ namespace ServicioIPS
             {
                 endpoints.MapControllers();
             });
+
+            
         }
     }
 }
