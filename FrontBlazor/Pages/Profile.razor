@@ -1,0 +1,135 @@
+﻿@page "/profile"
+@using FrontBlazor.Services
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<PageTitle>Perfil</PageTitle>
+
+<h1>Perfil de Usuario</h1>
+
+<p>Esta es otra página protegida que solo pueden ver los usuarios autenticados.</p>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <AuthorizeView Context="authContext">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <span>@GetInitials(authContext.User.Identity?.Name)</span>
+                </div>
+                <h2>@authContext.User.Identity?.Name</h2>
+            </div>
+
+            <div class="profile-details">
+                <h3>Información de la Cuenta</h3>
+                <div class="detail-item">
+                    <span class="label">Usuario:</span>
+                    <span class="value">@authContext.User.Identity?.Name</span>
+                </div>
+
+                @foreach (var claim in authContext.User.Claims.Where(c => c.Type != "role" && c.Type != ClaimTypes.Role && c.Type != ClaimTypes.Name))
+                {
+                    <div class="detail-item">
+                        <span class="label">@GetClaimDisplayName(claim.Type):</span>
+                        <span class="value">@claim.Value</span>
+                    </div>
+                }
+            </div>
+        </AuthorizeView>
+    </div>
+</div>
+
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .profile-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .profile-header {
+        padding: 2rem;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .profile-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background-color: #0d6efd;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .profile-details {
+        padding: 2rem;
+    }
+
+    .detail-item {
+        margin-bottom: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .label {
+        font-weight: bold;
+        min-width: 150px;
+    }
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        color: #495057;
+    }
+</style>
+
+@code {
+    [Inject]
+    private IAuthService AuthService { get; set; } = default!;
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Verificar autenticación
+        if (!await AuthService.IsAuthenticated())
+        {
+            Navigation.NavigateTo("/login");
+        }
+    }
+
+    private string GetInitials(string? name)
+    {
+        if (string.IsNullOrEmpty(name))
+            return "U";
+
+        return name.Length > 0 ? name[0].ToString().ToUpper() : "U";
+    }
+
+    private string GetClaimDisplayName(string claimType)
+    {
+        return claimType switch
+        {
+            "email" or ClaimTypes.Email => "Correo",
+            "given_name" or ClaimTypes.GivenName => "Nombre",
+            "family_name" or ClaimTypes.Surname => "Apellido",
+            "exp" => "Expiración",
+            "iat" => "Emitido",
+            _ => claimType.Split('/').Last()
+        };
+    }
+}

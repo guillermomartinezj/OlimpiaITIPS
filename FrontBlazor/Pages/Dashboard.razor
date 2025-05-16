@@ -1,0 +1,45 @@
+﻿@page "/dashboard"
+@using FrontBlazor.Services
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<PageTitle>Dashboard</PageTitle>
+
+<h1>Dashboard</h1>
+
+<p>Esta es una página protegida que solo pueden ver los usuarios autenticados.</p>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Información del Usuario</h5>
+        <AuthorizeView Context="authContext">
+            <p>Usuario: <strong>@authContext.User.Identity?.Name</strong></p>
+            <p>Roles:</p>
+            <ul>
+                @foreach (var claim in authContext.User.Claims.Where(c => c.Type == "role" || c.Type == ClaimTypes.Role))
+                {
+                    <li>@claim.Value</li>
+                }
+            </ul>
+        </AuthorizeView>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private IAuthService AuthService { get; set; } = default!;
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // Verificar autenticación
+        if (!await AuthService.IsAuthenticated())
+        {
+            Navigation.NavigateTo("/login");
+        }
+    }
+}

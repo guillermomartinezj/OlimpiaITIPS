@@ -1,0 +1,48 @@
+﻿@using FrontBlazor.Services
+@using Microsoft.AspNetCore.Components.Authorization;
+
+@inherits LayoutComponentBase
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<div class="page">
+    <AuthorizeView Context="authContext">
+        <Authorized>
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+
+            <main>
+                <div class="top-row px-4">
+                    <span>Bienvenido, @authContext.User.Identity?.Name!</span>
+                    <button class="btn btn-link" @onclick="HandleLogout">Cerrar Sesión</button>
+                </div>
+
+                <article class="content px-4">
+                    @Body
+                </article>
+            </main>
+        </Authorized>
+        <NotAuthorized>
+            <main class="login-layout">
+                @Body
+            </main>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+<style>
+    .login-layout {
+        width: 100%;
+        min-height: 100vh;
+        background-color: #f8f9fa;
+    }
+</style>
+
+@code {
+    private async Task HandleLogout()
+    {
+        await AuthService.Logout();
+        Navigation.NavigateTo("/login");
+    }
+}

@@ -1,0 +1,67 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+<PageTitle>Inicio</PageTitle>
+
+<div class="container">
+    <h1>Bienvenido a Mi Aplicación</h1>
+    
+    <p>Esta es la página de inicio pública.</p>
+    
+    <AuthorizeView>
+        <Authorized>
+            <div class="alert alert-success">
+                Estás autenticado. <a href="/dashboard">Ir al Dashboard</a>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="alert alert-info">
+                <p>Para acceder a las funciones protegidas, debes iniciar sesión.</p>
+                <a href="/login" class="btn btn-primary">Iniciar Sesión</a>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .alert {
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 4px;
+    }
+    
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-info {
+        color: #0c5460;
+        background-color: #d1ecf1;
+        border: 1px solid #bee5eb;
+    }
+    
+    .btn-primary {
+        display: inline-block;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #0d6efd;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        text-decoration: none;
+    }
+</style>
